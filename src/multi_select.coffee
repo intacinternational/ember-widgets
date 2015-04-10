@@ -107,9 +107,9 @@ Ember.Widgets.MultiSelectComponent = Ember.Widgets.SelectComponent.extend
 
   removeSelectItem: (item) ->
     # set the focus back to the searchView because this item will be removed
+    currentDropDownState = @get('showDropdown')
     @$('.ember-text-field')?.focus()
-    if @get('showDropdown')
-      @send 'hideDropdown'
+    @send 'hideDropdown' unless currentDropDownState
     @get('selections').removeObject item
 
   escapePressed: (event) ->
@@ -121,9 +121,6 @@ Ember.Widgets.MultiSelectComponent = Ember.Widgets.SelectComponent.extend
   enterPressed: (event) ->
     @_super(event)
     @$('.ember-text-field').focus()
-    # in case dropdown doesn't close
-    if @get('showDropdown')
-      @send 'hideDropdown'
 
   actions:
     removeSelectItem: (item) ->
