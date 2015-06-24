@@ -271,7 +271,12 @@ Ember.AddeparMixins.ResizeHandlerMixin,
   isLoading: no
   isLoaded: Ember.computed.not('isLoading')
   filteredContentIsEmpty: Ember.computed.empty 'filteredContent'
-  hasNoResults: Ember.computed.and('isLoaded', 'filteredContentIsEmpty')
+  contentIsEmpty: Ember.computed.empty 'content'
+  hasNoResults: Ember.computed ->
+    not @get('contentIsEmpty') and @get('isLoaded') and @get('filteredContentIsEmpty')
+  .property 'isLoaded', 'filteredContentIsEmpty', 'contentIsEmpty'
+  
+  and('isLoaded', 'filteredContentIsEmpty')
 
   value: Ember.computed (key, value) ->
     if arguments.length is 2 # setter
