@@ -54,6 +54,15 @@ Ember.Widgets.SelectOptionView = Ember.ListItemView.extend
     return if @get('content.isGroupOption')
     @set 'controller.highlighted', @get('content')
 
+Ember.Widgets.SelectTooltipOptionView = Ember.Widgets.SelectOptionView.extend
+  attributeBindings: ['contentLabel:title']
+
+  contentLabel: Ember.computed ->
+    # Wrap in Ember Object since content may be a POJO
+    obj = Ember.Object.create(@get('content'))
+    obj.get @get('labelPath')
+  .property 'content', 'labelPath'
+
 Ember.Widgets.SelectComponent =
 Ember.Component.extend Ember.Widgets.BodyEventListener,
 Ember.AddeparMixins.ResizeHandlerMixin, Ember.Widgets.KeyboardHelper,
@@ -61,11 +70,11 @@ Ember.AddeparMixins.ResizeHandlerMixin, Ember.Widgets.KeyboardHelper,
   classNames:         'ember-select'
   attributeBindings:  Ember.A ['tabindex']
   classNameBindings:  Ember.A ['showDropdown:open', 'isDropup:dropup']
-  itemViewClass:      'Ember.Widgets.SelectOptionView'
   prompt:             'Select a Value'
   placeholder:        undefined
   disabled: no
   hasFocus: no
+  showTooltip: yes
 
   highlightedIndex: -1
 
@@ -109,6 +118,8 @@ Ember.AddeparMixins.ResizeHandlerMixin, Ember.Widgets.KeyboardHelper,
   # This augments the dropdown to provide a place for adding a select menu that
   # possibly says 'create item' or something along that line
   selectMenuView: null
+  tooltipItemViewClass: 'Ember.Widgets.SelectTooltipOptionView'
+  originalItemViewClass: 'Ember.Widgets.SelectOptionView'
 
   # a map of accepted keys to show dropdown when being pressed
   # these are keys to show dropdown when being pressed
@@ -122,6 +133,13 @@ Ember.AddeparMixins.ResizeHandlerMixin, Ember.Widgets.KeyboardHelper,
       mappedKeys[key] = yes
     return mappedKeys
   .property()
+
+  itemViewClass: Ember.computed ->
+    if @get('showTooltip')
+      @get('tooltipItemViewClass')
+    else
+      @get('originalItemViewClass')
+  .property 'showTooltip'
 
   # This doesn't clean correctly if `optionLabelPath` changes
   willDestroy: ->
