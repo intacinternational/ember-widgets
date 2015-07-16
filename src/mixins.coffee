@@ -72,7 +72,7 @@ Ember.Widgets.BodyEventListener = Ember.Mixin.create
       Ember.run =>
         if (@get('_state') or @get('state')) is 'inDOM' and Ember.isEmpty(@$().has($(event.target)))
           # check if event.target still exists in DOM
-          if document.contains(event.target)
+          if document.body.contains(event.target)
             @bodyClick()
     $(@get('bodyElementSelector')).on "click", @_clickHandler
 
@@ -123,7 +123,7 @@ Ember.Widgets.TabbableModal = Ember.Mixin.create Ember.Widgets.KeyboardHelper,
     # in some cases, when the app remove the DOM element and replace it with
     # another one for styling purpose, we have to check and drive the focus
     # back to the modal
-    unless document.contains(event.target)
+    unless document.body.contains(event.target)
       @_focusTabbable()
     # if we click on a not-focusable elemnt, we should guide the focus back
     # to a focusable element, otherwise we will lose the TAB loop
